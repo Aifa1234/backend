@@ -2,36 +2,59 @@ const express = require("express");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const User = require("../models/User");
+const Profile = require("../models/Profile");
 const router = express.Router();
+require("dotenv").config();
 
-// User Signup
+// User Signup (Registers both User & Profile)
 router.post("/signup", async (req, res) => {
     try {
-        const { name, email, password, role } = req.body;
+        const { name, email, password } = req.body;
 
-        // Check if user already exists
-        let user = await User.findOne({ email });
-        if (user) {
-            return res.status(400).json({ message: "User already exists" });
+        if (!name || !email || !password) {
+            return res.status(400).json({ status: 400, message: "All fields are required" });
         }
 
-        // Hash password
+        let existingUser = await User.findOne({ email });
+        if (existingUser) {
+            return res.status(409).json({ status: 409, message: "User already exists" });
+        }
+
         const salt = await bcrypt.genSalt(10);
         const hashedPassword = await bcrypt.hash(password, salt);
 
-        // Create new user
-        user = new User({
+        // Create Profile with default values
+        const profile = new Profile({
             name,
             email,
+            contactNo: "",
+            gender: "other",
+            role: "basic",
+            aboutMe: "",
+            age: 0,
+            profilePic: ""
+        });
+
+        await profile.save();
+
+        // Create User linked to Profile
+        const user = new User({
+            email,
             password: hashedPassword,
-            role
+            role: "basic",
+            profile: profile._id
         });
 
         await user.save();
 
-        res.status(200).json({ message: "User registered successfully" });
+        res.status(201).json({
+            status: 201,
+            message: "User registered successfully",
+            profileId: profile.id, // Returning Profile ID
+            profile
+        });
     } catch (error) {
-        res.status(500).json({ error: "Internal Server Error", message: error.message });
+        res.status(500).json({ status: 500, message: "Internal Server Error", error: error.message });
     }
 });
 
@@ -40,28 +63,44 @@ router.post("/login", async (req, res) => {
     try {
         const { email, password } = req.body;
 
-        // Check if user exists
-        const user = await User.findOne({ email });
-        if (!user) {
-            return res.status(400).json({ message: "Invalid credentials" });
+        if (!email || !password) {
+            return res.status(400).json({ status: 400, message: "All fields are required" });
         }
 
-        // Validate password
+        const user = await User.findOne({ email }).populate("profile");
+        if (!user) {
+            return res.status(401).json({ status: 401, message: "Invalid credentials" });
+        }
+
         const isMatch = await bcrypt.compare(password, user.password);
         if (!isMatch) {
-            return res.status(400).json({ message: "Invalid credentials" });
+            return res.status(401).json({ status: 401, message: "Invalid credentials" });
         }
 
-        // Generate JWT token
+        if (!process.env.JWT_SECRET) {
+            return res.status(500).json({ status: 500, message: "JWT Secret is not configured" });
+        }
+
         const token = jwt.sign(
-            { userId: user._id, role: user.role },
+            { userId: user._id },
             process.env.JWT_SECRET,
-            { expiresIn: "1h" }
+            { expiresIn: "24h" }
         );
 
-        res.json({ token, role: user.role });
+        res.status(200).json({
+            status: 200,
+            message: "Login successful",
+            token,
+            user: {
+                id: user._id,
+                email: user.email,
+                role: user.role,
+                profile: user.profile,
+                profileId: user.profile.id // Returning Profile ID
+            }
+        });
     } catch (error) {
-        res.status(500).json({ error: "Internal Server Error", message: error.message });
+        res.status(500).json({ status: 500, message: "Internal Server Error", error: error.message });
     }
 });
 
