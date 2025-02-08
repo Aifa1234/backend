@@ -14,7 +14,7 @@ const ProfileSchema = new mongoose.Schema(
     gender: { type: String, enum: ["male", "female", "other"], default: "other" },
     age: { type: Number, default: 0 },
     aboutMe: { type: String, default: "" }, 
-    role: { type: String, default: "basic" },
+    role: { type: String, default: "patient",enum: ["patient", "delivery boy", "doctor"] },
   },
   { timestamps: true }
 );
