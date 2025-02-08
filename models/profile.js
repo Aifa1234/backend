@@ -13,7 +13,7 @@ const ProfileSchema = new mongoose.Schema(
     profilePic: { type: String, default: "" },
     gender: { type: String, enum: ["male", "female", "other"], default: "other" },
     age: { type: Number, default: 0 },
-    aboutMe: { type: String, default: "" },
+    aboutMe: { type: String, default: "" }, 
     role: { type: String, default: "basic" },
   },
   { timestamps: true }

@@ -1,6 +1,7 @@
 const express = require("express");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
+const mongoose = require("mongoose");
 const User = require("../models/User");
 const Profile = require("../models/Profile");
 const router = express.Router();
@@ -8,6 +9,9 @@ require("dotenv").config();
 
 // User Signup (Registers both User & Profile)
 router.post("/signup", async (req, res) => {
+    const session = await mongoose.startSession();
+    session.startTransaction();
+
     try {
         const { name, email, password } = req.body;
 
@@ -35,7 +39,7 @@ router.post("/signup", async (req, res) => {
             profilePic: ""
         });
 
-        await profile.save();
+        await profile.save({ session });
 
         // Create User linked to Profile
         const user = new User({
@@ -45,15 +49,25 @@ router.post("/signup", async (req, res) => {
             profile: profile._id
         });
 
-        await user.save();
+        await user.save({ session });
+
+        await session.commitTransaction();
+        session.endSession();
 
         res.status(201).json({
             status: 201,
             message: "User registered successfully",
-            profileId: profile.id, // Returning Profile ID
+            user: {
+                id: user._id,
+                email: user.email,
+                role: user.role,
+                profileId: profile.id
+            },
             profile
         });
     } catch (error) {
+        await session.abortTransaction();
+        session.endSession();
         res.status(500).json({ status: 500, message: "Internal Server Error", error: error.message });
     }
 });
@@ -95,9 +109,9 @@ router.post("/login", async (req, res) => {
                 id: user._id,
                 email: user.email,
                 role: user.role,
-                profile: user.profile,
-                profileId: user.profile.id // Returning Profile ID
-            }
+                profileId: user.profile.id
+            },
+            profile: user.profile
         });
     } catch (error) {
         res.status(500).json({ status: 500, message: "Internal Server Error", error: error.message });
