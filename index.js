@@ -35,6 +35,9 @@ app.use("/api/dashboard", dashboardRoutes);
 //   res.status(500).json({ error: "Internal Server Error" });
 // });
 
+// Import Train Route
+app.use("/api/train", require("./routes/train"));
+
 // Start Server
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
