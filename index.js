@@ -25,11 +25,13 @@ app.get("/", (req, res) => {
 const authRoutes = require("./routes/auth");
 const dashboardRoutes = require("./routes/dashboard");
 const trainRoutes = require("./routes/train");
+const medicineRoutes = require("./routes/medicineRoutes");
 
 // Use Routes
 app.use("/api/auth", authRoutes);
 app.use("/api/dashboard", dashboardRoutes);
 app.use("/api/train", trainRoutes);
+app.use("/api/medicine", medicineRoutes);
 
 // Global Error Handler
 app.use((err, req, res, next) => {
@@ -38,8 +40,6 @@ app.use((err, req, res, next) => {
 });
 
 
-const medicineRoutes = require("./routes/medicineRoutes");
-app.use("/api/medicine", medicineRoutes);
 
 // Start Server
 const PORT = process.env.PORT || 5000;

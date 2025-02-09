@@ -1,32 +1,50 @@
-const express = require('express');
-const Medicine = require('../models/Medicine');
-const { authenticate, authorizeRole } = require('../middleware/authMiddleware'); // Ensure correct import
+const express = require("express");
+const Medicine = require("../models/Medicine");
+
 
 const router = express.Router();
 
-// Add medicine (Only Pharmacist)
-router.post('/add', async (req, res) => {
-  try {
-    const { name, description, price, stock, expiryDate, manufacturer } = req.body;
+// ✅ Pharmacist can add medicine
+router.post("/add", async (req, res) => {
+    try {
+        const { name, manufacturer, price, stock, expiryDate, description } = req.body;
 
-    if (!name || !price || !stock || !expiryDate) {
-      return res.status(400).json({ message: 'All required fields must be provided' });
+        // Validate required fields
+        if (!name || !manufacturer || !price || !stock || !expiryDate) {
+            return res.status(400).json({ error: "All required fields must be provided" });
+        }
+
+        if (!req.user || !req.user.id) {
+            return res.status(401).json({ error: "Unauthorized" });
+        }
+
+        const medicine = new Medicine({
+            name,
+            manufacturer,
+            price,
+            stock,
+            expiryDate,
+            description,
+            createdBy: req.user.id, // Get pharmacist ID from token
+        });
+
+        await medicine.save();
+        res.status(201).json({ message: "Medicine added successfully", medicine });
+    } catch (err) {
+        console.error("Error adding medicine:", err);
+        res.status(500).json({ error: "Internal Server Error" });
     }
+});
 
-    const newMedicine = new Medicine({
-      name,
-      description,
-      price,
-      stock,
-      expiryDate,
-      manufacturer
-    });
-
-    await newMedicine.save();
-    res.status(201).json({ message: 'Medicine added successfully', medicine: newMedicine });
-  } catch (error) {
-    res.status(500).json({ message: 'Server error', error: error.message });
-  }
+// ✅ Get all medicines (Public or Authenticated Users Only)
+router.get("/get", async (req, res) => {
+    try {
+        const medicines = await Medicine.find().populate("createdBy", "name email");
+        res.json(medicines);
+    } catch (err) {
+        console.error("Error fetching medicines:", err);
+        res.status(500).json({ error: "Internal Server Error" });
+    }
 });
 
 module.exports = router;
