@@ -1,19 +1,30 @@
-const jwt = require("jsonwebtoken");
-require("dotenv").config();
+const jwt = require('jsonwebtoken');
+const User = require('../models/User');
 
-const authMiddleware = (req, res, next) => {
-    const token = req.header("Authorization");
-    if (!token) {
-        return res.status(401).json({ message: "No token, authorization denied" });
-    }
+const authenticate = async (req, res, next) => {
+  const token = req.header('Authorization');
 
-    try {
-        const decoded = jwt.verify(token.split(" ")[1], process.env.JWT_SECRET);
-        req.user = decoded;
-        next();
-    } catch (error) {
-        res.status(401).json({ message: "Invalid token" });
-    }
+  if (!token) {
+    return res.status(401).json({ message: 'Access Denied. No token provided' });
+  }
+
+  try {
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    req.user = await User.findById(decoded.id).select('-password');
+    next();
+  } catch (error) {
+    res.status(400).json({ message: 'Invalid Token' });
+  }
 };
 
-module.exports = authMiddleware;
+// Role-based authorization middleware
+const authorizeRole = (role) => {
+  return (req, res, next) => {
+    if (!req.user || req.user.accountType !== role) {
+      return res.status(403).json({ message: 'Unauthorized: Insufficient permissions' });
+    }
+    next();
+  };
+};
+
+module.exports = { authenticate, authorizeRole };

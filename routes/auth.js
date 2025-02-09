@@ -13,7 +13,7 @@ router.post("/signup", async (req, res) => {
     session.startTransaction();
 
     try {
-        const { name, email, password } = req.body;
+        const { name, email, password} = req.body;
 
         if (!name || !email || !password) {
             return res.status(400).json({ status: 400, message: "All fields are required" });
@@ -57,12 +57,7 @@ router.post("/signup", async (req, res) => {
         res.status(201).json({
             status: 201,
             message: "User registered successfully",
-            user: {
-                id: user._id,
-                email: user.email,
-                role: user.role,
-                profileId: profile.id
-            },
+            user,
             profile
         });
     } catch (error) {
