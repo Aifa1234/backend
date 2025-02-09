@@ -1,120 +1,95 @@
-# 🚆 Medi Train - Medicine Delivery in Trains 🚆
-
-### *🔹 About the Project*
-Medi Train is a smart medicine delivery service designed for train passengers. It enables users to *order medicines while traveling* and get them delivered at their upcoming station, ensuring *quick and hassle-free access to essential medications*.
+Here’s an updated README.md file considering MongoDB Atlas as the database:  
 
 ---
 
-## *🚀 Features*
-✅ *MedExpress* - Order medicine on the go.  
-✅ *TrackMyMeds* - Live tracking of your medicine orders.  
-✅ *DocOnTrack* - Instant doctor consultations while traveling.  
-✅ *SmartPNR Tracker* - Real-time train location tracking (Implemented).  
-✅ *AI MedGuide* - AI-powered medicine suggestions.  
-✅ *StationCare* - Find nearby medical help at train stations.  
-✅ *HealthAssist 24/7* - Chat or call support anytime.  
-✅ *Profile Update* - Manage and update user profiles.  
+# *Node.js Backend with MongoDB Atlas*  
 
----
+This is a Node.js-based backend using *MongoDB Atlas* for database storage. It provides authentication and train-related APIs. The project follows a modular structure with index.js as the entry point.  
 
-## *🛠 Tech Stack*
-- *Frontend:* Flutter (Dart)  
-- *Backend:* Node.js with Express.js  
-- *Database:* PostgreSQL  
-- *APIs:* External Railway APIs for live train tracking  
+## *Features*  
+- User authentication (Signup & Login)  
+- Train-related operations (/api/train, /api/add)  
+- Role-based access control  
+- MongoDB Atlas integration  
 
----
+## *Technologies Used*  
+- Node.js  
+- Express.js  
+- MongoDB Atlas  
+- Mongoose  
+- JWT Authentication  
 
-## *📉 API Details*
-### *Authentication API*
-- *Sign Up:* POST /api/auth/signin (email, name, password)  
-- *Login:* POST /api/auth/login (email, password)  
+## *Project Structure*  
 
-### *Train Data API*
-- External API is called for fetching train station details, updated in train_station_model.dart.
-
----
-
-## *📈 How It Works?*
-1️⃣ *Enter Train Number or PNR* - Get live train status and upcoming stations.  
-2️⃣ *Search for Medicines* - Select the medicines you need.  
-3️⃣ *Find Nearby Pharmacies* - The app suggests pharmacies at upcoming stations.  
-4️⃣ *Place Order* - Choose payment method and confirm order.  
-5️⃣ *Receive Medicines* - Pick up at the station when the train arrives.  
-
----
-
-## *📞 Installation & Setup*
-To run this project on your local machine, follow these steps:
-
-### *🔹 Prerequisites*
-- Flutter installed ([Download Flutter](https://flutter.dev/docs/get-started/install))
-- Node.js installed ([Download Node.js](https://nodejs.org/))
-
-### *🔹 Clone the Repository*
-sh
-git clone https://github.com/your-username/medi-train.git
-cd medi-train
+📂 project-root  
+ ┣ 📂 config             # Configuration files (DB, environment variables)  
+ ┣ 📂 models             # Mongoose models (User, Profile, Train, etc.)  
+ ┣ 📂 routes             # API route handlers  
+ ┣ 📂 controllers        # Business logic for APIs  
+ ┣ 📂 middlewares        # Authentication & validation middleware  
+ ┣ 📂 utils              # Helper functions  
+ ┣ 📜 index.js           # Entry point of the application  
+ ┣ 📜 .env               # Environment variables  
+ ┣ 📜 package.json       # Project dependencies  
+ ┗ 📜 README.md          # Project documentation  
 
 
-### *🔹 Install Dependencies*
-sh
-flutter pub get  # Install Flutter dependencies
-cd backend
-npm install  # Install backend dependencies
+## *Installation & Setup*  
 
+1. *Clone the repository:*  
+   sh
+   git clone <repository_url>
+   cd project-root
+   
 
-### *🔹 Run the Application*
-#### Start Backend
-sh
-cd backend
-npm i
-npm run dev
+2. *Install dependencies:*  
+   sh
+   npm install
+   
 
-#### Start Flutter App
-sh
-flutter run
+3. *Configure MongoDB Atlas:*  
+   - Create an account on [MongoDB Atlas](https://www.mongodb.com/cloud/atlas)  
+   - Set up a cluster and get the *MongoDB connection URI*  
 
+4. **Create a .env file** and add:  
+   env
+   PORT=5000
+   MONGO_URI=<your_mongodb_atlas_connection_uri>
+   JWT_SECRET=<your_jwt_secret>
+   
 
----
+5. *Start the server:*  
+   sh
+   npm start
+   
 
-## *📝 License*
-This project is *open-source* and available under the *MIT License*.
+## *API Endpoints*  
 
----
+### *Authentication Routes*  
+| Method | Endpoint            | Description          |
+|--------|---------------------|----------------------|
+| POST   | /api/auth/signup  | User registration   |
+| POST   | /api/auth/login   | User login          |
 
+### *Train Routes*  
+| Method | Endpoint        | Description                        |
+|--------|----------------|------------------------------------|
+| GET    | /api/train   | Get all train data                |
+| POST   | /api/add     | Add new train information         |
 
-## *🛠 Group Members Repository*
-- *Angular:*   GitHub: [github.com/Charchika-19]([https://github.com/Charchika-19.(https://github.com/Charchika-19/Medi-Train))  
-https://github.com/Charchika-19/Medi-Train
-
-- *Backend:*   GitHub: [github.com/Aifa1234]([https://github.com/Aifa1234.(https://github.com/Aifa1234/backend))  
-https://github.com/Charchika-19/Medi-Train
-
+## *Running the Project*  
+- *Development Mode:*  
+  sh
+  npm run dev
+  
+- *Production Mode:*  
+  sh
+  npm start
   
 
----
-
-## *👨‍💻 Contributing*
-We welcome contributions! If you’d like to contribute:
-1. Fork the repo.
-2. Create a new branch (git checkout -b feature-name).
-3. Commit your changes (git commit -m "Added new feature").
-4. Push to your branch (git push origin feature-name).
-5. Open a *Pull Request*.
+## *License*  
+This project is licensed under the MIT License.  
 
 ---
 
-## *💾 Download APK*
-📂 *[Download Latest Release](https://drive.google.com/drive/folders/1LZ5dfNRvxpTTkcmTpjfdp-46x_iSZn89?usp=drive_link)*
-
----
-
-## *📧 Contact*
-For any queries or suggestions, feel free to reach out:  
-📧 Email: [gourinandana682003@gmail.com](mailto:gourinandana682003@gmail.com)  
-📄 GitHub: [github.com/GouriiNandanaa](https://github.com/GouriiNandanaa)  
-
----
-
-🚆💊 *Medi Train – Making Medicines Accessible on the Go!* 💊🚆
+Let me know if you need any changes!
