@@ -1,4 +1,4 @@
-Here’s an updated README.md file considering MongoDB Atlas as the database:  
+ 
 
 ---
 
@@ -54,8 +54,10 @@ This is a Node.js-based backend using *MongoDB Atlas* for database storage. It p
 4. **Create a .env file** and add:  
    env
    PORT=5000
-   MONGO_URI=<your_mongodb_atlas_connection_uri>
-   JWT_SECRET=<your_jwt_secret>
+MONGO_URI=mongodb+srv://aifasaleem1:Aifa!23@cluster0.bpggu.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0
+JWT_SECRET=your_secret_key
+RAPIDAPI_KEY=a5c51c1a2cmsh6bfb9c28c0108aep1a72eejsne5c00626f32d
+
    
 
 5. *Start the server:*  
@@ -87,9 +89,4 @@ This is a Node.js-based backend using *MongoDB Atlas* for database storage. It p
   npm start
   
 
-## *License*  
-This project is licensed under the MIT License.  
 
----
-
-Let me know if you need any changes!
